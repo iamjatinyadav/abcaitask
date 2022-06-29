@@ -1,0 +1,20 @@
+version: '3'
+
+services:
+  db:
+    image: sqlite
+    environment:
+      - SQLITE_DB=sqlite
+      - SQLITE_USER=jatin
+      - SQLITE_PASSWORD=12345
+
+  web:
+    build: .
+    command: bash -c "python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    container_name: abcai
+    volumes:
+      - .:/abcai
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db

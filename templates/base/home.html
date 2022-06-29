@@ -1,0 +1,135 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous" />
+  <!-- Bootstrap datepicker CSS -->
+  <script src="https://code.jquery.com/jquery-2.2.3.min.js"
+    integrity="sha256-a23g1Nt4dtEYOj7bR+vTu7+T8VP13humZFBJNIYoEJo=" crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"
+    integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS"
+    crossorigin="anonymous"></script>
+  <script type="text/javascript"
+    src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.0/js/bootstrap-datepicker.min.js"></script>
+  <link rel="stylesheet" type="text/css"
+    href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.1/css/bootstrap-datepicker3.min.css" />
+  <!-- A script to get data picker in 'yyyy-mm-dd' format -->
+  <script>
+    $(document).ready(function () {
+      $("#from-datepicker").datepicker({
+        format: "yyyy-mm-dd",
+      });
+
+      $("#from-datepickerend").datepicker({
+        format: "yyyy-mm-dd",
+      });
+    });
+  </script>
+  <title>Abc AI | Home</title>
+</head>
+
+<body>
+  <header>
+    <!--create a nav bar-->
+    <nav class="navbar navbar-expand-lg navbar navbar-dark bg-primary">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="">AbcAI</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown"
+          aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+      </div>
+    </nav>
+    <!-- for show all messages-->
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+      <strong>Message:</strong> {{ message }}
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endfor %}
+  </header>
+  <main>
+    <!--use a form to upload a csv-->
+    <!--File Upload Form-->
+    <div class="container">
+      <form method="post" action="uploaddata" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="mb-3">
+          <label for="formFile" class="form-label">Upload a CSV File</label>
+          <input class="form-control" name="file" type="file" id="formFile" />
+        </div>
+        <button type="submit" onclick='location.href={% url "uploaddata" %}' class="btn btn-success">
+          Upload A CSV File
+        </button>
+      </form>
+    </div>
+    <!-- use a form to get start date and end date-->
+    <!--dates form-->
+    <div class="container">
+      <form method="post" action="fatch">
+        {% csrf_token %}
+        <div class="row">
+          <div class="col-4">
+            <label> Start Date</label><br />
+            <input type="text" name="from-datepicker" id="from-datepicker" />
+          </div>
+          <div class="col-4">
+            <label> End Date</label><br />
+            <input type="text" name="from-datepickerend" id="from-datepickerend" />
+          </div>
+        </div>
+        <br />
+        <button type="submit" onclick="location.href={% url 'fatch'%}" class="btn btn-success">
+          Fatch Data & Generate Report
+        </button>
+      </form>
+    </div>
+    <br />
+    <!--To Show a table Header-->
+    <div class="container">
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th scope="col">Image Name</th>
+            <th scope="col">Detections</th>
+            <th scope="col">Image</th>
+          </tr>
+        </thead>
+        <!--run a loop to show all the data views.py-->
+        {% for data in all_datas %}
+        <tbody>
+          <tr>
+            <td>{{data.image_name}}</td>
+            <td>{{data.objects_detected}}</td>
+            <td>
+              <img src="{% static 'base/images/' %}{{data.image_name}} " , width="100px" height="100px" </td>
+          </tr>
+        </tbody>
+        {% endfor %}
+      </table>
+    </div>
+  </main>
+
+  <!-- Optional JavaScript; choose one of the two! -->
+
+  <!-- Option 1: Bootstrap Bundle with Popper -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+    crossorigin="anonymous"></script>
+
+  <!-- Option 2: Separate Popper and Bootstrap JS -->
+  <!--
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
+    -->
+</body>
+
+</html>
